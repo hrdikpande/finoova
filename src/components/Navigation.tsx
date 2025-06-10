@@ -17,6 +17,8 @@ const Navigation = () => {
   const navItems = [
     { name: 'Features', href: '#features' },
     { name: 'Demo', href: '#demo' },
+    { name: 'About', href: '#about' },
+    { name: 'Founders', href: '#founders' },
     { name: 'Enterprise', href: '#enterprise' },
     { name: 'Resources', href: '#resources' },
   ];
@@ -28,10 +30,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">F</span>
-            </div>
+          <div className="flex items-center space-x-3">
+            <img 
+              src="/finoova-logo.svg" 
+              alt="FinoovA Logo" 
+              className="h-10 w-auto"
+            />
             <span className={`text-2xl font-bold transition-colors ${
               isScrolled ? 'text-gray-900' : 'text-white'
             }`}>

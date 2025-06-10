@@ -39,6 +39,7 @@ const Footer = () => {
     ],
     Company: [
       { name: 'About Us', href: '#about' },
+      { name: 'Founders', href: '#founders' },
       { name: 'Careers', href: '#careers' },
       { name: 'Press Kit', href: '#press' },
       { name: 'Contact', href: '#contact' },
@@ -65,10 +66,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Company Info */}
           <div className="lg:col-span-4">
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">F</span>
-              </div>
+            <div className="flex items-center space-x-3 mb-6">
+              <img 
+                src="/finoova-logo.svg" 
+                alt="FinoovA Logo" 
+                className="h-10 w-auto filter brightness-0 invert"
+              />
               <span className="text-2xl font-bold">FinoovA</span>
             </div>
             <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
@@ -80,15 +83,18 @@ const Footer = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">enterprise@finoova.com</span>
+                <span className="text-gray-300">info@finoova.com</span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">+91 76757 17165</span>
+                <span className="text-gray-300">+91 99899 00229</span>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">Bengaluru, India</span>
+                <span className="text-gray-300">
+                  Mantri Cosmos, ISB Rd, Financial District,<br />
+                  Hyderabad, Nanakramguda, Telangana 500032
+                </span>
               </div>
             </div>
 
@@ -206,6 +212,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-sm text-gray-400 mb-4 md:mb-0">
               © 2025 FinoovA. All rights reserved. Built with enterprise-grade security.
+              <span className="ml-4 text-blue-400">Powered by Spotwebs</span>
             </div>
             <div className="flex space-x-6 text-sm">
               <a href="#privacy" className="text-gray-400 hover:text-blue-400 transition-colors">
