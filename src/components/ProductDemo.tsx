@@ -1,35 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, Volume2, Maximize } from 'lucide-react';
+import { Play, Pause, Volume2, Maximize, VolumeX } from 'lucide-react';
 import Modal from './modals/Modal';
 import DemoForm from './forms/DemoForm';
 
 const ProductDemo = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const demoFeatures = [
     {
       title: 'AI-Powered Invoice Processing',
-      description: 'Automatically extract, validate, and process invoices with 99.8% accuracy',
-      timestamp: '0:15'
+      description: 'Automatically extract, validate, and process invoices with 99.8% accuracy'
     },
     {
       title: 'Real-Time Compliance Monitoring',
-      description: 'Monitor GST/TDS compliance in real-time with automated alerts',
-      timestamp: '1:30'
+      description: 'Monitor GST/TDS compliance in real-time with automated alerts'
     },
     {
       title: 'Blockchain Audit Trail',
-      description: 'Immutable transaction records with complete transparency',
-      timestamp: '2:45'
+      description: 'Immutable transaction records with complete transparency'
     },
     {
       title: 'Predictive Analytics Dashboard',
-      description: 'Forecast cash flow and identify financial trends',
-      timestamp: '4:00'
+      description: 'Forecast cash flow and identify financial trends'
     }
   ];
+
+  const handlePlayPause = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  const handleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
+    }
+  };
+
+  const handleFullscreen = () => {
+    if (videoRef.current) {
+      if (!isFullscreen) {
+        videoRef.current.requestFullscreen();
+        setIsFullscreen(true);
+      } else {
+        document.exitFullscreen();
+        setIsFullscreen(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -75,24 +104,35 @@ const ProductDemo = () => {
             >
               <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl">
                 <div className="aspect-video relative">
-                  <img
-                    src="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200"
-                    alt="FinoovA Demo"
+                  <video
+                    ref={videoRef}
                     className="w-full h-full object-cover"
-                  />
+                    poster="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => setIsPlaying(false)}
+                  >
+                    <source src="/finoova-demo.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
                   
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <button className="w-20 h-20 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
-                      <Play className="w-8 h-8 text-white ml-1" />
-                    </button>
-                  </div>
+                  {/* Play Button Overlay - Only show when paused */}
+                  {!isPlaying && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                      <button 
+                        onClick={handlePlayPause}
+                        className="w-20 h-20 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+                      >
+                        <Play className="w-8 h-8 text-white ml-1" />
+                      </button>
+                    </div>
+                  )}
 
                   {/* Video Controls */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
                     <div className="flex items-center gap-4">
                       <button 
-                        onClick={() => setIsPlaying(!isPlaying)}
+                        onClick={handlePlayPause}
                         className="text-white hover:text-blue-400 transition-colors"
                       >
                         {isPlaying ? <Pause size={20} /> : <Play size={20} />}
@@ -101,10 +141,16 @@ const ProductDemo = () => {
                         <div className="bg-blue-500 h-1 rounded-full w-1/3"></div>
                       </div>
                       <span className="text-white text-sm">2:30 / 7:45</span>
-                      <button className="text-white hover:text-blue-400 transition-colors">
-                        <Volume2 size={20} />
+                      <button 
+                        onClick={handleMute}
+                        className="text-white hover:text-blue-400 transition-colors"
+                      >
+                        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
                       </button>
-                      <button className="text-white hover:text-blue-400 transition-colors">
+                      <button 
+                        onClick={handleFullscreen}
+                        className="text-white hover:text-blue-400 transition-colors"
+                      >
                         <Maximize size={20} />
                       </button>
                     </div>
@@ -145,10 +191,8 @@ const ProductDemo = () => {
                   className="group cursor-pointer"
                 >
                   <div className="flex items-start gap-4 p-4 rounded-lg hover:bg-white hover:shadow-md transition-all duration-300">
-                    <div className="flex-shrink-0 w-12 h-12 bg-blue-100 group-hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors">
-                      <span className="text-blue-600 group-hover:text-white font-bold text-sm">
-                        {feature.timestamp}
-                      </span>
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-100 group-hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors">
+                      <div className="w-2 h-2 bg-blue-600 group-hover:bg-white rounded-full"></div>
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
