@@ -4,7 +4,7 @@ import Features from './components/features/Features';
 import ProductDemo from './components/ProductDemo';
 import TechStack from './components/TechStack';
 import Testimonials from './components/Testimonials';
-import Footer from './components/Footer';
+import Footer from './components/Footer.tsx';
 import Navigation from './components/Navigation';
 
 function App() {
