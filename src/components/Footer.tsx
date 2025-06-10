@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Mail, 
@@ -13,8 +13,13 @@ import {
   Award,
   Globe
 } from 'lucide-react';
+import NewsletterForm from './forms/NewsletterForm';
+import { useApi } from '../hooks/useApi';
 
 const Footer = () => {
+  const { submitForm } = useApi();
+  const [downloadLoading, setDownloadLoading] = useState<string | null>(null);
+
   const footerLinks = {
     Product: [
       { name: 'Features', href: '#features' },
@@ -59,6 +64,33 @@ const Footer = () => {
     { name: 'GitHub', icon: Github, href: '#' }
   ];
 
+  const handleDownload = async (type: string) => {
+    setDownloadLoading(type);
+    
+    // Get user email (in a real app, you might have this from auth context)
+    const email = prompt('Please enter your email to receive the download:');
+    
+    if (email) {
+      try {
+        await submitForm('/download', { email, type });
+        alert(`${type} will be sent to your email shortly!`);
+      } catch (error) {
+        alert('Failed to process download. Please try again.');
+      }
+    }
+    
+    setDownloadLoading(null);
+  };
+
+  const scrollToSection = (href: string) => {
+    if (href.startsWith('#')) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
     <footer className="bg-slate-900 text-white">
       {/* Main Footer Content */}
@@ -83,11 +115,15 @@ const Footer = () => {
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">info@finoova.com</span>
+                <a href="mailto:info@finoova.com" className="text-gray-300 hover:text-blue-400 transition-colors">
+                  info@finoova.com
+                </a>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-blue-400" />
-                <span className="text-gray-300">+91 99899 00229</span>
+                <a href="tel:+919989900229" className="text-gray-300 hover:text-blue-400 transition-colors">
+                  +91 99899 00229
+                </a>
               </div>
               <div className="flex items-center gap-3">
                 <MapPin className="w-5 h-5 text-blue-400" />
@@ -121,12 +157,12 @@ const Footer = () => {
                   <ul className="space-y-3">
                     {links.map((link, index) => (
                       <li key={index}>
-                        <a
-                          href={link.href}
-                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm"
+                        <button
+                          onClick={() => scrollToSection(link.href)}
+                          className="text-gray-300 hover:text-blue-400 transition-colors text-sm text-left"
                         >
                           {link.name}
-                        </a>
+                        </button>
                       </li>
                     ))}
                   </ul>
@@ -145,24 +181,18 @@ const Footer = () => {
               <p className="text-gray-300 mb-6">
                 Get the latest insights on financial technology, compliance updates, and product announcements.
               </p>
-              <div className="flex gap-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-                />
-                <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors flex items-center">
-                  Subscribe
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </button>
-              </div>
+              <NewsletterForm inline />
             </div>
 
             {/* Downloads */}
             <div>
               <h3 className="text-xl font-bold mb-4">Enterprise Resources</h3>
               <div className="space-y-4">
-                <button className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleDownload('Product Brochure')}
+                  disabled={downloadLoading === 'Product Brochure'}
+                  className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-700 rounded-lg transition-colors"
+                >
                   <div className="flex items-center">
                     <Download className="w-5 h-5 text-blue-400 mr-3" />
                     <div className="text-left">
@@ -172,7 +202,11 @@ const Footer = () => {
                   </div>
                   <ArrowRight className="w-5 h-5 text-gray-400" />
                 </button>
-                <button className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors">
+                <button 
+                  onClick={() => handleDownload('ROI Calculator')}
+                  disabled={downloadLoading === 'ROI Calculator'}
+                  className="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 disabled:bg-slate-700 rounded-lg transition-colors"
+                >
                   <div className="flex items-center">
                     <Download className="w-5 h-5 text-blue-400 mr-3" />
                     <div className="text-left">
@@ -215,18 +249,18 @@ const Footer = () => {
               <span className="ml-4 text-blue-400">Powered by Spotwebs</span>
             </div>
             <div className="flex space-x-6 text-sm">
-              <a href="#privacy" className="text-gray-400 hover:text-blue-400 transition-colors">
+              <button className="text-gray-400 hover:text-blue-400 transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#terms" className="text-gray-400 hover:text-blue-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-blue-400 transition-colors">
                 Terms of Service
-              </a>
-              <a href="#security" className="text-gray-400 hover:text-blue-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-blue-400 transition-colors">
                 Security
-              </a>
-              <a href="#cookies" className="text-gray-400 hover:text-blue-400 transition-colors">
+              </button>
+              <button className="text-gray-400 hover:text-blue-400 transition-colors">
                 Cookie Policy
-              </a>
+              </button>
             </div>
           </div>
         </div>

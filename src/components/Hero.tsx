@@ -3,6 +3,9 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Sphere, MeshDistortMaterial, Float } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { Play, ArrowRight, Shield, Zap, Bot } from 'lucide-react';
+import Modal from './modals/Modal';
+import DemoForm from './forms/DemoForm';
+import ContactForm from './forms/ContactForm';
 
 const AnimatedSphere = () => {
   return (
@@ -22,6 +25,8 @@ const AnimatedSphere = () => {
 
 const Hero = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   const stats = [
     { value: '500+', label: 'Enterprise Clients' },
@@ -100,7 +105,10 @@ const Hero = () => {
               transition={{ delay: 0.6 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <button className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center">
+              <button 
+                onClick={() => setIsDemoModalOpen(true)}
+                className="group px-8 py-4 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center"
+              >
                 Start Enterprise Trial
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
@@ -163,27 +171,33 @@ const Hero = () => {
       </div>
 
       {/* Video Modal */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden">
-            <button
-              onClick={() => setIsVideoModalOpen(false)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center text-white transition-colors"
-            >
-              ×
-            </button>
-            <video
-              className="w-full h-full"
-              controls
-              autoPlay
-              poster="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200"
-            >
-              <source src="/demo-video.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </div>
+      <Modal isOpen={isVideoModalOpen} onClose={() => setIsVideoModalOpen(false)} maxWidth="max-w-4xl">
+        <div className="aspect-video bg-black rounded-lg overflow-hidden">
+          <video
+            className="w-full h-full"
+            controls
+            autoPlay
+            poster="https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1200"
+          >
+            <source src="/demo-video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
-      )}
+      </Modal>
+
+      {/* Demo Modal */}
+      <Modal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)}>
+        <DemoForm onClose={() => setIsDemoModalOpen(false)} />
+      </Modal>
+
+      {/* Contact Modal */}
+      <Modal isOpen={isContactModalOpen} onClose={() => setIsContactModalOpen(false)}>
+        <ContactForm 
+          type="Enterprise Trial" 
+          title="Start Your Enterprise Trial"
+          onClose={() => setIsContactModalOpen(false)} 
+        />
+      </Modal>
     </div>
   );
 };
